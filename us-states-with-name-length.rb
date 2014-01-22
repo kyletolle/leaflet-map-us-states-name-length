@@ -64,10 +64,23 @@ class FileWriter
   end
 
   def write
-    file = 'us-states-with-name-length.js'
+    write_js
+    write_geojson
+  end
+
+private
+  def write_js
+    js_file = 'us-states-with-name-length.js'
     js   = "var statesData = #{@string};"
-    File.write(file, js)
-    puts "Wrote JS to #{file}"
+    File.write(js_file, js)
+    puts "Wrote JS to #{js_file}"
+  end
+
+  def write_geojson
+    geojson_file = 'us-states-with-name-length.geojson'
+    geojson = @string
+    File.write(geojson_file, geojson)
+    puts "Wrote GeoJSON to #{geojson_file}"
   end
 end
 
