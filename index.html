@@ -52,8 +52,7 @@
             attribution: "Tiles courtesy of <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a><img src='http://developer.mapquest.com/content/osm/mq_logo.png'>. Map data (c) <a href='http://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a> contributors, CC-BY-SA."
         });
 
-
-      var map = L.map('map', {layers: [mapquestOAM, mapquestOSM]}).setView([37.8, -96], 3);
+      var map = L.map('map', {layers: [mapquestOSM]}).setView([37.8, -96], 3);
 
       var baseMaps = {
         "Mapquest Aerial": mapquestOAM,
