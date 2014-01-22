@@ -40,12 +40,14 @@
     <script type="text/javascript">
       var map = L.map('map').setView([37.8, -96], 3);
 
-      L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
-          key: '...',
-          styleId: '997@2x',
-          attribution: 'Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
-          maxZoom: 18
-      }).addTo(map);
+      mapquestOSM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            zIndex: 1,
+            subdomains: ["otile1", "otile2", "otile3", "otile4"],
+            attribution: "Tiles courtesy of <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a><img src='http://developer.mapquest.com/content/osm/mq_logo.png'>. Map data (c) <a href='http://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a> contributors, CC-BY-SA."
+        });
+
+      mapquestOSM.addTo(map);
 
       function getColor(d) {
         // Colors from http://colorbrewer2.org/
