@@ -38,7 +38,6 @@
   <body>
     <div id="map"></div>
     <script type="text/javascript">
-      var map = L.map('map').setView([37.8, -96], 3);
 
       mapquestOSM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {
             maxZoom: 19,
@@ -47,10 +46,23 @@
             attribution: "Tiles courtesy of <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a><img src='http://developer.mapquest.com/content/osm/mq_logo.png'>. Map data (c) <a href='http://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a> contributors, CC-BY-SA."
         });
 
-      mapquestOSM.addTo(map);
+      mapquestOAM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
+            maxZoom: 18,
+            zIndex: 1,
+            subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
+            attribution: "Tiles courtesy of <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a>. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency"
+        });
+
+      var map = L.map('map', {layers: [mapquestOSM, mapquestOAM]}).setView([37.8, -96], 3);
+
+      var baseMaps = {
+        "Mapquest OSM": mapquestOSM,
+        "Mapquest Aerial": mapquestOAM
+      }
+
+      L.control.layers(baseMaps).addTo(map);
 
       function getColor(d) {
-        // Colors from http://colorbrewer2.org/
         return d == 4  ? '#BBB' :
                d == 5  ? '#AAA' :
                d == 6  ? '#999' :
