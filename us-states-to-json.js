@@ -7,7 +7,7 @@ include('us-states.js');
 
 statesJSON = JSON.stringify(statesData);
 
-fs.writeFile('us-states.json', statesJSON, function (err) {
+fs.writeFile('us-states.geojson', statesJSON, function (err) {
   if (err) throw err;
-  console.log('Wrote states JSON file.');
+  console.log('Wrote states GeoJSON file.');
 });

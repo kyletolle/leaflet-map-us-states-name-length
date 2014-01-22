@@ -1,4 +1,3 @@
-
 class Processor
   def initialize(reader_klass, converter_klass, algorithm_klass, writer_klass)
     @reader_klass    = reader_klass
@@ -19,7 +18,7 @@ end
 
 class FileReader
   def read
-    File.read('us-states.json')
+    File.read('us-states.geojson')
   end
 end
 
