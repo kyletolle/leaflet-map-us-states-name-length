@@ -41,10 +41,20 @@ class NameLengthAlgorithm
   end
 
   def process
-    @data["features"].map do |state|
-      state["properties"].delete("density")
-      state["properties"]["nameLength"] = state["properties"]["name"].length
-    end
+    stats = {}.tap {|h|
+      @data["features"].map do |state|
+        state["properties"].delete("density")
+        nameLength = state["properties"]["name"].length
+        state["properties"]["nameLength"] = nameLength
+        occurrences = h[nameLength]
+        h[nameLength] = occurrences ? occurrences+1 : 1
+      end
+    }
+
+    counts = stats.sort_by {|k,v| k }
+    puts "Name Length Info:(length, num_occurrences): #{counts}"
+    puts "Name Lengths: #{counts.map{|a| a[0]}}"
+    puts "Number of different name lengths: #{stats.count}"
     @data
   end
 end
