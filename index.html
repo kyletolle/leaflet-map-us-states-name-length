@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Map of US States by Name Length</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+    <style>
+      #map { height: 700px; }
+    </style>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="us-states-with-name-length.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+      var map = L.map('map').setView([37.8, -96], 3);
+
+      L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+          key: '...',
+          styleId: '997@2x',
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
+          maxZoom: 18
+      }).addTo(map);
+
+      L.geoJson(statesData).addTo(map);
+    </script>
+  </body>
+</html>
