@@ -32,13 +32,16 @@
           opacity: 0.7;
       }
     </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
-    <script src="us-states-with-name-length.js"></script>
   </head>
   <body>
     <div id="map"></div>
     <script type="text/javascript">
 
+      /////////////////////
+      // BASEMAP LAYERS
+      /////////////////////
       mapquestOAM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
             maxZoom: 18,
             zIndex: 1,
@@ -51,16 +54,24 @@
             subdomains: ["otile1", "otile2", "otile3", "otile4"],
             attribution: "Tiles courtesy of <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a><img src='http://developer.mapquest.com/content/osm/mq_logo.png'>. Map data (c) <a href='http://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a> contributors, CC-BY-SA."
         });
+      freshyMap = L.tileLayer("http://d5cy2ubdj7ciu.cloudfront.net/{z}/{x}/{y}.jpg", {
+            maxZoom: 19,
+            zIndex: 1,
+            attribution: "TODO"
+        });
+
 
       var map = L.map('map', {layers: [mapquestOSM]}).setView([37.8, -96], 3);
 
       var baseMaps = {
         "Mapquest Aerial": mapquestOAM,
-        "Mapquest OSM": mapquestOSM
+        "Mapquest OSM": mapquestOSM,
+        "Freshy Maps":  freshyMap
       }
 
-      L.control.layers(baseMaps).addTo(map);
-
+      /////////////////////
+      // PARCELS
+      /////////////////////
       function getColor(d) {
         return d == 4  ? '#8dd3c7' :
               d == 5  ? '#ffffb3' :
@@ -87,7 +98,8 @@
           };
       }
 
-      var geojson;
+      var states;
+      var info = L.control();
 
       function highlightFeature(e) {
         var layer = e.target;
@@ -99,15 +111,15 @@
             fillOpacity: 0.7
         });
 
-        if (!L.Browser.ie && !L.Browser.opera) {
-            layer.bringToFront();
-        }
+        //if (!L.Browser.ie && !L.Browser.opera) {
+        //    layer.bringToFront();
+        //}
 
         info.update(layer.feature.properties);
       }
 
       function resetHighlight(e) {
-          geojson.resetStyle(e.target);
+          states.resetStyle(e.target);
 
           info.update();
       }
@@ -124,13 +136,47 @@
           });
       }
 
-      geojson = L.geoJson(statesData, {
+      states = L.geoJson(null, {
         style: style,
         onEachFeature: onEachFeature
       }).addTo(map);
 
-      var info = L.control();
+      $.getJSON("us-states-with-name-length.geojson", function(data) {
+        states.addData(data);
+      });
 
+      /////////////////////
+      // ALLEYS
+      /////////////////////
+      function alleyStyle(feature) {
+          return {
+              weight: 2,
+              opacity: 1,
+              color: '#ff69b4',
+          };
+      }
+
+      var alleys;
+
+      alleys = L.geoJson(null, {
+        style: alleyStyle,
+      }).addTo(map);
+
+      $.getJSON("alleys.geojson", function (data) {
+          alleys.addData(data);
+      });
+
+      /////////////////////
+      // OVERLAYS
+      /////////////////////
+      var overlays = {
+        "States": states,
+        "Alleys": alleys
+      };
+
+      L.control.layers(baseMaps, overlays).addTo(map);
+
+      // INFO
       info.onAdd = function (map) {
           this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
           this.update();
@@ -146,19 +192,24 @@
 
       info.addTo(map);
 
+      /////////////////////
+      // LEGEND
+      /////////////////////
       var legend = L.control({position: 'bottomright'});
 
       legend.onAdd = function (map) {
 
           var div = L.DomUtil.create('div', 'info legend'),
-              grades = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 20],
+              numLetters = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 20],
               labels = [];
 
           // loop through our name lenghts and generate a label with a colored square for each interval
-          for (var i = 0; i < grades.length; i++) {
+          for (var i = 0; i < numLetters.length; i++) {
               div.innerHTML +=
-                  '<i style="background:' + getColor(grades[i]) + '"></i> ' +
-                  grades[i] + ' letters' + (grades[i + 1] ? ' <br>' : '');
+                '<i style="background:' + getColor(numLetters[i]) +
+                '"></i> ' +
+                numLetters[i] + ' letters' +
+                (numLetters[i + 1] ? ' <br>' : '');
           }
 
           return div;
